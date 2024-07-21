@@ -42,6 +42,7 @@ if [ -n "$VALUES" ]; then
 fi
 
 # add the tekton chart repository
+unset GTK_PATH
 $GIT clone https://github.com/tektoncd/operator.git
 $HELM repo add tektoncd https://kubebb.github.io/components
 
