@@ -8,11 +8,10 @@ NAMESPACE_tekton="tekton-operator"
 
 tekton_HELM_VERSION="0.64.0"
 
-# "$SNAP/microk8s-enable.wrapper" helm
+"$SNAP/microk8s-enable.wrapper" helm
 
 KUBECTL="$SNAP/microk8s-kubectl.wrapper"
-HELM="/snap/bin/helm"
-# GIT="$SNAP/usr/bin/git"
+HELM="$SNAP/microk8s-helm.wrapper"
 GIT_EXEC_PATH=/snap/microk8s/current/usr/lib/git-core/
 VALUES=""
 
@@ -42,11 +41,10 @@ if [ -n "$VALUES" ]; then
 fi
 
 # add the tekton chart repository
-/snap/bin/helm plugin remove helm-git > /dev/null 2>&1 || true
-/snap/bin/helm plugin install https://github.com/aslafy-z/helm-git --version 1.3.0
-/snap/bin/helm repo add tektoncd git+https://github.com/tektoncd/operator@charts?ref=main
-
-#$HELM repo add tektoncd "git+https://github.com/tektoncd/operator@charts?ref=main"
+export GIT_EXEC_PATH=/snap/microk8s/current/usr/lib/git-core/
+$HELM plugin remove helm-git > /dev/null 2>&1 || true
+$HELM plugin install https://github.com/aslafy-z/helm-git --version 1.3.0
+$HELM repo add tektoncd git+https://github.com/tektoncd/operator@charts?ref=main
 
 # install the helm chart
 if [ -z "$VALUES" ]
