@@ -12,7 +12,8 @@ tekton_HELM_VERSION="0.64.0"
 
 KUBECTL="$SNAP/microk8s-kubectl.wrapper"
 HELM="$SNAP/microk8s-helm3.wrapper"
-GIT="$SNAP/usr/bin/git"
+# HELM="/snap/bin/helm"
+# GIT="$SNAP/usr/bin/git"
 
 VALUES=""
 
@@ -44,7 +45,7 @@ fi
 # add the tekton chart repository
 
 
-/snap/bin/helm repo add tektoncd "git+https://github.com/tektoncd/operator@charts?ref=main"
+$HELM repo add tektoncd "git+https://github.com/tektoncd/operator@charts?ref=main"
 
 # install the helm chart
 if [ -z "$VALUES" ]
@@ -54,14 +55,14 @@ then
       --set installCRDs=true \
       --version $tekton_HELM_VERSION \
       --namespace "$NAMESPACE" \
-      ./operator/chart
+      tektoncd/tekton-operator
 else
     $HELM upgrade -i tekton-operator \
       --version $tekton_HELM_VERSION \
       --create-namespace \
       --namespace "$NAMESPACE" \
       -f $VALUES \
-      ./operator/chart
+      tektoncd/tekton-operator
 fi
 
 echo "Tekton is installed"
