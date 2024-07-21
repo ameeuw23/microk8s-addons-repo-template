@@ -8,10 +8,10 @@ NAMESPACE_tekton="tekton-operator"
 
 tekton_HELM_VERSION="0.64.0"
 
-"$SNAP/microk8s-enable.wrapper" helm
+# "$SNAP/microk8s-enable.wrapper" helm
 
 KUBECTL="$SNAP/microk8s-kubectl.wrapper"
-HELM="$SNAP/microk8s-helm.wrapper"
+HELM="/snap/bin/helm"
 # GIT="$SNAP/usr/bin/git"
 
 VALUES=""
@@ -43,8 +43,9 @@ fi
 
 # add the tekton chart repository
 
+/snap/bin/helm repo add tektoncd "git+https://github.com/tektoncd/operator@charts?ref=main"
 
-$HELM repo add tektoncd "git+https://github.com/tektoncd/operator@charts?ref=main"
+#$HELM repo add tektoncd "git+https://github.com/tektoncd/operator@charts?ref=main"
 
 # install the helm chart
 if [ -z "$VALUES" ]
