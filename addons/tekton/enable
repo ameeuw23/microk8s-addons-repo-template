@@ -11,8 +11,8 @@ tekton_HELM_VERSION="0.64.0"
 "$SNAP/microk8s-enable.wrapper" helm3
 
 KUBECTL="$SNAP/microk8s-kubectl.wrapper"
-HELM="$SNAP/microk8s-helm3.wrapper"
-# HELM="/snap/bin/helm"
+# HELM="$SNAP/microk8s-helm3.wrapper"
+HELM="/snap/bin/helm"
 # GIT="$SNAP/usr/bin/git"
 
 VALUES=""
