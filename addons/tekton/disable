@@ -4,10 +4,10 @@ set -e
 
 source $SNAP/actions/common/utils.sh
 
-NAMESPACE_tekton="tekton"
+NAMESPACE_tekton="tekton-operator"
 
 KUBECTL="$SNAP/microk8s-kubectl.wrapper"
-HELM="$SNAP/microk8s-helm3.wrapper"
+HELM="$SNAP/microk8s-helm.wrapper"
 KUBECTL_DELETE_ARGS="--wait=true --timeout=180s --ignore-not-found=true"
 
 PURGE=false
@@ -20,7 +20,7 @@ while getopts ":p" flag; do
              echo ""
              echo "WARNING: Final deletion of \"$NAMESPACE_tekton\" namespace must be enforced by: \"microk8s disable tekton -p\""
              echo ""
-             echo "Purge only when sure, that \"$NAMESPACE_tekton\" namespace is not hosting any other services from Argo stack."
+             echo "Purge only when sure, that \"$NAMESPACE_tekton\" namespace is not hosting any other services from Tekton stack."
              echo ""
              exit 0
              ;;
@@ -29,12 +29,9 @@ done
 
 echo "Disabling tekton"
 
-$HELM delete argo-cd -n $NAMESPACE_tekton
+$HELM uninstall --namespace tekton-operator tekton-operator --wait
 
-$KUBECTL delete customresourcedefinition applications.argoproj.io \
-                applicationsets.argoproj.io \
-                tektonextensions.argoproj.io  \
-                appprojects.argoproj.io
+$KUBECTL delete crd TektonConfig TektonPipeline TektonDashboard TektonInstallerSet TektonResults TektonTrigger TektonAddon --ignore-not-found --grace-period=0
 
 if $PURGE; then
     echo "Final \"$NAMESPACE_tekton\" namespace deletion"
@@ -43,8 +40,10 @@ else
     echo ""
     echo "WARNING: Final deletion of \"$NAMESPACE_tekton\" namespace must be enforced by: \"microk8s disable tekton -p\""
     echo ""
-    echo "Purge only when sure, that \"$NAMESPACE_tekton\" namespace is not hosting any other services from Argo stack."
+    echo "Purge only when sure, that \"$NAMESPACE_tekton\" namespace is not hosting any other services from Tekton stack."
     echo ""
 fi
+
+$HELM repo remove tektoncd
 
 echo "tekton disabled"

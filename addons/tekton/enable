@@ -50,7 +50,7 @@ $HELM repo add tektoncd git+https://github.com/tektoncd/operator@charts?ref=main
 if [ -z "$VALUES" ]
 then
     $HELM upgrade -i tekton-operator \
-      -n tekton-operator \
+      -n "$NAMESPACE_tekton" \
       --create-namespace \
       --set installCRDs=true \
       --version $tekton_HELM_VERSION \
@@ -58,7 +58,7 @@ then
 else
     $HELM upgrade -i tekton-operator \
       --version $tekton_HELM_VERSION \
-      --namespace "$NAMESPACE" \
+      --namespace "$NAMESPACE_tekton" \
       -f $VALUES \
       tektoncd/tekton-operator
 fi
