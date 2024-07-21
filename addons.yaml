@@ -20,7 +20,7 @@ microk8s-addons:
 
     - name: "tekton"
       description: "A Helm chart for Tekton Pipelines"
-      version: "1.0.2"
+      version: "0.71.0"
       check_status: "deployment.apps/argo-cd-argocd-server"
       supported_architectures:
         - arm64
