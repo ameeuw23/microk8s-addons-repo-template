@@ -10,7 +10,7 @@ KUBECTL="$SNAP/microk8s-kubectl.wrapper"
 HELM="$SNAP/microk8s-helm.wrapper"
 KUBECTL_DELETE_ARGS="--wait=true --timeout=180s --ignore-not-found=true"
 
-PURGE=false
+PURGE=true
 # get the options
 while getopts ":p" flag; do
   case "${flag}" in
@@ -29,9 +29,17 @@ done
 
 echo "Disabling tekton"
 
+CRDS="tektonchains.operator.tekton.dev tektonconfigs.operator.tekton.dev tektondashboards.operator.tekton.dev tektoninstallersets.operator.tekton.dev tektonpipelines.operator.tekton.dev tektontriggers.operator.tekton.dev"
+
+for CRD in $CRDS
+do
+  echo $CRD
+  $KUBECTL kubectl patch "crd/$CRD" -p '{"metadata":{"finalizers":[]}}' --type=merge || true
+done
+
 $HELM uninstall --namespace tekton-operator tekton-operator --wait
 
-$KUBECTL delete crd TektonConfig TektonPipeline TektonDashboard TektonInstallerSet TektonResults TektonTrigger TektonAddon --ignore-not-found --grace-period=0
+$KUBECTL delete crd TektonConfig TektonPipeline TektonDashboard TektonInstallerSet TektonResults TektonTrigger TektonAddon --ignore-not-found --grace-period=0 --force
 
 if $PURGE; then
     echo "Final \"$NAMESPACE_tekton\" namespace deletion"
