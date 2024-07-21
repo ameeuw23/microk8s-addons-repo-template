@@ -1,0 +1,63 @@
+#!/usr/bin/env bash
+
+set -e
+
+source $SNAP/actions/common/utils.sh
+
+NAMESPACE_tekton="tekton"
+
+tekton_HELM_VERSION="5.34.3"
+
+"$SNAP/microk8s-enable.wrapper" helm3
+
+KUBECTL="$SNAP/microk8s-kubectl.wrapper"
+HELM="$SNAP/microk8s-helm3.wrapper"
+
+VALUES=""
+
+# get the options
+while getopts ":v:f:h:" flag; do
+  case "${flag}" in
+          v) tekton_HELM_VERSION=${OPTARG}
+             ;;
+          f) VALUES=${OPTARG}
+             ;;
+          *) echo "Usage: microk8s enable tekton"
+             echo ""
+             echo "With overwriting default values: microk8s enable tekton -f values.yaml"
+             echo ""
+             echo "See https://cdfoundation.github.io/tekton-helm-chart for more information about the values"
+             echo "You should enable the Ingress addon, if you want to use tekton with an Ingress"
+             echo "microk8s enable ingress"
+             exit 0
+             ;;
+  esac
+done
+
+echo "Installing tekton (Helm v${tekton_HELM_VERSION})"
+
+if [ -n "$VALUES" ]; then
+    echo "Using values file: $VALUES"
+fi
+
+
+# make sure the "tekton" namespace exists
+$KUBECTL create namespace "$NAMESPACE_tekton" > /dev/null 2>&1 || true
+
+# add the tekton chart repository
+$HELM repo add cdf https://cdfoundation.github.io/tekton-helm-chart/
+
+# install the helm chart
+if [ -z "$VALUES" ]
+then
+    $HELM upgrade -i tekton cdf/tekton-pipeline \
+      --version $tekton_HELM_VERSION \
+      --namespace "$NAMESPACE_tekton"
+else
+    $HELM upgrade -i tekton cdf/tekton-pipeline \
+      --version $tekton_HELM_VERSION \
+      --namespace "$NAMESPACE_tekton" \
+      -f $VALUES
+fi
+
+echo "Tekton is installed"

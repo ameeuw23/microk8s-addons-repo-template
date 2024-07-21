@@ -1,4 +1,5 @@
-## Your repository
+## Armando Meeuwenoord
+### Microk8s Addon Repository
 
 A MicroK8s addons repository should have a comprehensive description of the addons collection it includes. The current template repository contains two addons:
 
