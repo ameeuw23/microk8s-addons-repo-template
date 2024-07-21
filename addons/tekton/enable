@@ -13,7 +13,7 @@ tekton_HELM_VERSION="0.64.0"
 KUBECTL="$SNAP/microk8s-kubectl.wrapper"
 HELM="/snap/bin/helm"
 # GIT="$SNAP/usr/bin/git"
-
+GIT_EXEC_PATH=/snap/microk8s/current/usr/lib/git-core/
 VALUES=""
 
 # get the options
