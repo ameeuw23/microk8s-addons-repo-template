@@ -6,7 +6,7 @@ source $SNAP/actions/common/utils.sh
 
 NAMESPACE_tekton="tekton"
 
-tekton_HELM_VERSION="5.34.3"
+tekton_HELM_VERSION="1.0.2"
 
 "$SNAP/microk8s-enable.wrapper" helm3
 
