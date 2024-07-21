@@ -34,7 +34,7 @@ CRDS="tektonchains.operator.tekton.dev tektonconfigs.operator.tekton.dev tektond
 for CRD in $CRDS
 do
   echo $CRD
-  $KUBECTL kubectl patch "crd/$CRD" -p '{"metadata":{"finalizers":[]}}' --type=merge || true
+  $KUBECTL patch "crd/$CRD" -p '{"metadata":{"finalizers":[]}}' --type=merge || true
 done
 
 $HELM uninstall --namespace tekton-operator tekton-operator --wait
